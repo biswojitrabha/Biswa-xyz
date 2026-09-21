@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BISWA ARMY MODS - Key Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #09090e, #1a103c, #0f0c29);
+            height: 100vh; display: flex; justify-content: center; align-items: center; color: #fff;
+            overflow: hidden;
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px; padding: 35px; width: 380px; text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+        h2 { margin-bottom: 20px; font-weight: 700; letter-spacing: 2px; color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.3); }
+        .info-text { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-bottom: 20px; line-height: 1.5; }
+        .glass-input-box { margin-bottom: 20px; }
+        input {
+            width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 12px;
+            color: #00ffcc; font-size: 14px; text-align: center; letter-spacing: 1px; outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .glass-btn {
+            width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-size: 15px; font-weight: 600;
+            border-radius: 12px; cursor: pointer; transition: 0.3s; margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .glass-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.15); border-color: #00ffcc; transform: translateY(-2px); }
+        .glass-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .copy-btn { background: rgba(0, 255, 204, 0.15); border-color: rgba(0, 255, 204, 0.3); color: #00ffcc; }
+        .copy-btn:hover { background: rgba(0, 255, 204, 0.3); }
+        #status { font-size: 13px; color: #ffcc00; margin-top: 10px; font-weight: 500; min-height: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        <h2>BISWA ARMY MODS</h2>
+        <div class="info-text">
+            ⚠️ Security Check Active.<br>
+            Key valid for <b>3 Hours</b> & locked to <b>1 Device</b>.
+        </div>
+        <div class="glass-input-box">
+            <input type="text" id="keyField" placeholder="Click generate to start timer" readonly>
+        </div>
+        <button class="glass-btn" id="genBtn" onclick="startGeneration()">Generate Key (20s)</button>
+        <button class="glass-btn copy-btn" onclick="copyKey()">Copy Key</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function startGeneration() {
+            let btn = document.getElementById("genBtn");
+            let status = document.getElementById("status");
+            let keyField = document.getElementById("keyField");
+            
+            btn.disabled = true;
+            let timeLeft = 20;
+            
+            // 20 Seconds Hard Verification Countdown
+            let timer = setInterval(() => {
+                status.innerText = `Please wait... Generating security key (${timeLeft}s)`;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    fetchKeyFromServer();
+                }
+            }, 1000);
+        }
+
+        async function fetchKeyFromServer() {
+            let status = document.getElementById("status");
+            let btn = document.getElementById("genBtn");
+            status.innerText = "Connecting to server...";
+            
+            try {
+                // Vercel Secure API Link
+                let response = await fetch('https://biswa-backend.vercel.app/?action=generate');
+                let data = await response.json();
+                
+                if(data.status === "success") {
+                    document.getElementById("keyField").value = data.key;
+                    status.innerText = "Success! Key valid for 3 hours.";
+                } else {
+                    status.innerText = "Error generating key!";
+                }
+            } catch (err) {
+                status.innerText = "Server connection failed!";
+            }
+            btn.disabled = false;
+        }
+
+        function copyKey() {
+            const keyField = document.getElementById("keyField");
+            if(keyField.value === "") {
+                document.getElementById("status").innerText = "Please generate a key first!";
+                return;
+            }
+            keyField.select();
+            navigator.clipboard.writeText(keyField.value);
+            document.getElementById("status").innerText = "Key copied to clipboard!";
+        }
+    </script>
+</body>
+</html>
